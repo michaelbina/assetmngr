@@ -1,0 +1,5 @@
+#assets
+  - @assets.each do |asset|
+    = render :partial => "asset", :locals => { :asset => asset }
+
+= link_to 'New Asset', new_asset_path
