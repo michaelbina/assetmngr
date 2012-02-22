@@ -1,5 +1,5 @@
 %tr.asset{"asset-id" => asset.id}
   %td= link_to image_tag('icons/delete.png'), asset_path(asset), :method=>:delete, :confirm=>"Are you sure?", :remote => true, :class => "delete-asset", 'data-type' => 'json'
   %td
-    %a.asset-name{:href => "https://s3.amazonaws.com/assetmngr/#{asset.filename}", :target => '_new'}= asset.name
+    %a.asset-name{:href => "#{AssetsHelper::S3BaseUrl}#{asset.filename}", :target => '_new'}= asset.name
   %td= render :partial => "shared/tags_form.html.haml", :locals => { :asset => asset }
