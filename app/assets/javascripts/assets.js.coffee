@@ -25,17 +25,33 @@ jQuery ->
 			formData.append("file-"+i, file)
 		)
 		formData.append("count", files.length)
+		
+		setProgress = (e) ->
+			percentComplete = (e.loaded / e.total)*100
+			$("#progress-bar .bar").css({width: "#{percentComplete}%"})
+		
 		$.ajax({
 			url: '/assets/add_assets.json',
 			type: 'POST',
 			data: formData,
 			success: (data) ->
+				# get the new assets html
 				new_assets = data.assets_html
 				$.each(new_assets, (index, value) ->
+					# add the new elements to the table and highlight them
 					$("#assets tbody").append(value).children().last().children().each((index, item) -> $(item).effect("highlight", {}, 3000))
 				)
+				$("#upload-button").removeClass("disabled")
+				$("#progress-bar .bar").css({width: "0%"})
 				tagForm.init_tag_inputs()
+			xhr: () ->
+				myXhr = $.ajaxSettings.xhr()
+				if(myXhr.upload)
+				    myXhr.upload.addEventListener('progress', setProgress, false)
+					return myXhr
 			error: (data) ->
+			beforeSend: () ->
+				$("#upload-button").addClass("disabled")
 			cache: false,
 			contentType: false,
 			processData: false

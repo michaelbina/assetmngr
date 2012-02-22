@@ -46,11 +46,8 @@ class @TagForm
 	init_tag_inputs: () ->
 		self = this
 		
-		$(".add_tag_input").bind('focus', (e) ->
-			self.place_cursor($(this))
-		) 
-
-		$(".asset input.add_tag_input").keypress((e) ->
+		# set event handlers for input field
+		$(".asset .add_tag_input").keypress((e) ->
 			if(e.which == 13)
 				input = $(this)
 				self.add_tag(input)
@@ -59,9 +56,13 @@ class @TagForm
 			select: () ->
 				input = $(this)
 				self.add_tag(input)
-		})
+		}).bind('focus', (e) ->
+			self.place_cursor($(this))
+			source: '/tags',
+		)
 		
-		$(".asset a.remove-tag").live('ajax:success',
+		# set event handler for tag remove button
+		$(".asset .remove-tag").live('ajax:success',
 			(e, data, textStatus, jqXHR) ->
 				input = $(this).parents(".tags-container").find(".add-tag input")
 				$(this).parents(".tag").fadeOut().remove()

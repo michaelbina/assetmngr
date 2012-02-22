@@ -14,4 +14,6 @@
 %h4 Upload files
 %form{:id => "upload_form", :enctype => "multipart/form-data",:method => 'post'}
   %input{:type => 'file', :name => 'file[]', :id => 'file_select', :multiple => true}
-  %a#upload-button.btn Upload
+  %a#upload-button.btn Upload 
+  #progress-bar.progress.progress-danger.progress-striped
+    .bar
