@@ -1,8 +1,4 @@
-
-
-
-
-class TagForm
+class @TagForm
 	constructor: () ->
 		self = this
 		self.init_tag_inputs()
