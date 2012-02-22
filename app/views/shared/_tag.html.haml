@@ -1,0 +1,3 @@
+%li.tag
+  = link_to tag_name, asset_tag_path(tag_name)
+  = link_to "X", asset_remove_tag_path(asset, :tag => tag_name), :method=>:delete, :remote => true, :class => "remove-tag", 'data-type' => 'json'

@@ -1,0 +1,6 @@
+.tags-container
+  .add-tag
+    = text_field_tag "add_tag_#{asset.id}", "", :class => "add_tag_input"        
+  %ul.tags
+    - asset.tags.each do |tag|
+      = render :partial => "shared/tag", :locals => { :asset => asset, :tag_name => tag.name }

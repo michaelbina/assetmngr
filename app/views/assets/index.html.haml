@@ -1,5 +1,13 @@
-#assets
+%table#assets.table.table-striped.table-bordered.table-condensed
+  %tr
+    %th
+    %th File
+    %th Tags
   - @assets.each do |asset|
-    = render :partial => "asset", :locals => { :asset => asset }
+    = render :partial => "shared/asset", :locals => { :asset => asset }
 
-= link_to 'New Asset', new_asset_path
+
+%h4 Upload files
+%form{:id => "upload_form", :enctype => "multipart/form-data",:method => 'post'}
+  %input{:type => 'file', :name => 'file[]', :id => 'file_select', :multiple => true}
+  %a#upload-button.btn Upload

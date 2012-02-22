@@ -2,6 +2,12 @@ AssetManager::Application.routes.draw do
   root :to => 'assets#index'
   
   resources :assets
+  match '/tags' => 'assets#tags', :as => :asset_tags
+  match '/assets/tag/:tag' => 'assets#tag', :as => :asset_tag
+  match '/assets/:id/add_tag' => 'assets#add_tag', :as => :asset_add_tag
+  match '/assets/:id/remove_tag' => 'assets#remove_tag', :as => :asset_remove_tag
+  match '/assets/add_assets' => 'assets#add_assets', :as => :add_assets
+  
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

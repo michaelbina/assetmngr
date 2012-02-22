@@ -2,10 +2,59 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-#assets
-	padding: 20px
+@mixin rounded-corners($pxs)
+	-webkit-border-radius: $pxs
+	-moz-border-radius: $pxs
+	border-radius: $pxs
 
-.asset
-	padding: 10px
-	background-color: #aaa
-	margin: 10px
+@mixin rotate($degrees)
+	-moz-transform: rotate($degrees)
+	-ms-transform: rotate($degrees)
+	-o-transform: rotate($degrees)
+	transform: rotate($degrees)
+
+@mixin shadow($h, $v, $blur, $color)
+	-webkit-box-shadow: $h $v $blur $color
+	-moz-box-shadow: $h $v $blur $color
+	-o-box-shadow: $h $v $blur $color
+	box-shadow: $h $v $blur $color
+
+
+
+
+li
+	list-style-type: none
+	
+	
+ul
+	&.tags
+		overflow: auto
+		margin: 0
+		padding: 0
+		position: relative
+		top: -33px
+		left: 5px
+		display: inline-block
+		li.tag
+			background-color: #9DACCC
+			border: 1px solid #E2E6F0
+			padding: 2px
+			padding-left: 4px
+			padding-right: 4px
+			margin-bottom: 4px
+			margin-right: 4px
+			float: left
+			height: 17px
+			padding-top: 0px
+			@include rounded-corners(5px)
+			a
+				color: #fff
+				font-size: 11px
+				text-transform: lowercase
+				text-decoration: none
+				.remove-tag
+					color: red
+			&:active
+				position: relative
+				top: 1px
+				left: 1px

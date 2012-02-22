@@ -44,7 +44,7 @@ class AssetsController < ApplicationController
 
     respond_to do |format|
       if @asset.save
-        format.html { redirect_to @asset, notice: 'Asset was successfully created.' }
+        format.html { redirect_to assets_url, notice: 'Asset was successfully created.' }
         format.json { render json: @asset, status: :created, location: @asset }
       else
         format.html { render action: "new" }
@@ -80,6 +80,19 @@ class AssetsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # GET /tags
+  # GET /tags.json
+  def tags
+    @tags_with_count = Asset.tag_counts_on(:tags)
+    
+    @tags = @tags_with_count.map{|tag_hash| tag_hash = tag_hash.name }
+    
+    respond_to do |format|
+      format.html
+      format.json  { render :json => @tags }
+    end
+  end
   
   # Get all assets with a specific tag
   # GET /tag/#{tag}
@@ -99,9 +112,15 @@ class AssetsController < ApplicationController
   def add_tag
     @asset = Asset.find(params[:id])
     new_tag = params[:tag]
+    
+    if @asset.tag_list.include?(new_tag)
+      render :nothing => true
+      return
+    end
+    
     @asset.tag_list << new_tag
     
-    tag_html = render_to_string :partial => "asset.html", :locals => { :asset => @asset, :tag_name => new_tag }
+    tag_html = render_to_string :partial => "shared/tag.html.haml", :locals => { :asset => @asset, :tag_name => new_tag }
     
     respond_to do |format|
       if @asset.save
@@ -120,12 +139,12 @@ class AssetsController < ApplicationController
   def remove_tag
     @asset = Asset.find(params[:id])
     tag_to_remove = params[:tag]
-
+    
     @asset.tags = @asset.tags.select{|tag| tag.name != tag_to_remove}
     
     respond_to do |format|
       if @asset.save
-        format.html { redirect_to(@asset, :notice => 'Tag was successfully removed from asset.') }
+        format.html { redirect_to(assets_url, :notice => 'Tag was successfully removed from asset.') }
         format.json  { render :json => @asset }
       else
         format.html { render :action => "edit" }
@@ -133,5 +152,31 @@ class AssetsController < ApplicationController
       end
     end
   end
+  
+  # POST /assets/add_assets
+  # POST /assets/add_assets.json
+  def add_assets
+    num_files = params[:count].to_i
+    
+    @new_assets = []
+    @new_assets_html = []
+    num_files.times do |file_num|
+      file = params["file-"+file_num.to_s]
+      @asset = Asset.new(:name => file.original_filename)
+      @asset.save
+      @asset.save_file(file)
+      
+      @new_assets.push(@asset)
+      asset_html = render_to_string :partial => "shared/asset.html.haml", :locals => { :asset => @asset }
+      @new_assets_html.push(asset_html)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to assets_url, notice: 'Asset was successfully created.' }
+      format.json { render json: {:assets => @new_assets, :assets_html => @new_assets_html, status: :created} }
+    end
+
+  end
+  
   
 end
