@@ -3,84 +3,21 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 //= require jquery-ui.min
-
-
-
+//= require tag_form
 
 jQuery ->
 	
-	get_tags_width = (parent) ->
-		width = 0
-		$(parent).find(".tag").each(() ->
-			width += $(this).width()
-			width += 15
-		)
-		return width
-		
-	place_cursor = (input) ->
-		asset = input.parents(".asset")
-		tags_container = asset.find(".tags")[0]
-		
-		width = get_tags_width(tags_container)
-		input.css({'padding-left': width+'px'})
+	tagForm = new TagForm()
 	
-	add_tag = (input) ->
-		asset = input.parents(".asset")
-		asset_id = asset.attr("asset-id")
-		
-		tags_container = asset.find(".tags")[0]
-		
-		inputValue = input.val()
-		
-		$.ajax({
-			url: '/assets/' + asset_id + '/add_tag.json'
-			type: 'PUT'
-			data: {
-				tag: inputValue
-			},
-			success: (data) ->
-				$(tags_container).append(data.tag_html)
-				input.val("")
-				place_cursor(input)
-				return null
-		})
-		
-	init_tag_inputs = () ->
-		$(".add_tag_input").bind('focus', (e) ->
-			place_cursor($(this))
-		) 
-
-		$(".asset input.add_tag_input").keypress((e) ->
-			if(e.which == 13)
-				input = $(this)
-				add_tag(input)
-		).autocomplete({
-			source: '/tags',
-			select: () ->
-				input = $(this)
-				add_tag(input)
-		})		
-		
-	$(".asset a.remove-tag").live('ajax:success',
-		(e, data, textStatus, jqXHR) ->
-			input = $(this).parents(".tags-container").find(".add-tag input")
-			$(this).parents(".tag").fadeOut().remove()
-			place_cursor(input)
-			return null
-	)
-	
-	## Remove an element
+	## Attack a callback to remove a row when the delete button is clicked
 	$(".asset a.delete-asset").live('ajax:success',
 		(e, data, textStatus, jqXHR) ->
 			el = $(e.target).closest(".asset")
 			el.fadeOut()
 			return null
 	)
-	
-	init_tag_inputs()
-
-	
-	
+		
+	## Send file data using ajax when clicking the upload button
 	$('#upload-button').click((e) ->
 		formData = new FormData()
 		files = $('#file_select')[0].files
@@ -97,7 +34,7 @@ jQuery ->
 				$.each(new_assets, (index, value) ->
 					$("#assets tbody").append(value).children().last().children().each((index, item) -> $(item).effect("highlight", {}, 3000))
 				)
-				init_tag_inputs()
+				tagForm.init_tag_inputs()
 			error: (data) ->
 			cache: false,
 			contentType: false,
