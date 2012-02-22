@@ -6,7 +6,7 @@
 //= require tag_form
 
 jQuery ->
-	
+	## initialize a TagForm class which handles all the tag input functions
 	tagForm = new TagForm()
 	
 	## Attack a callback to remove a row when the delete button is clicked

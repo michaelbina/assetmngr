@@ -81,6 +81,9 @@ class AssetsController < ApplicationController
     end
   end
 
+  #
+  # Get all tags in the system currently
+  #
   # GET /tags
   # GET /tags.json
   def tags
@@ -94,11 +97,15 @@ class AssetsController < ApplicationController
     end
   end
   
+  #
   # Get all assets with a specific tag
+  #
   # GET /tag/#{tag}
   # GET /tag/#{tag}.json
   def tag
     @assets = Asset.tagged_with(params[:tag])
+    @tag = params[:tag]
+    
     
     respond_to do |format|
       format.html { render :index }
@@ -106,7 +113,9 @@ class AssetsController < ApplicationController
     end
   end
   
+  #
   # Add a tag to the specified asset
+  #
   # PUT /assets/:id/add_tag
   # PUT /assets/:id/add_tag.json
   def add_tag
@@ -133,7 +142,9 @@ class AssetsController < ApplicationController
     end
   end
   
+  #
   # Remove a tag from the specified asset
+  #
   # DELETE /posts/1/remove_tag
   # DELETE /posts/1/remove_tag.json
   def remove_tag
@@ -153,6 +164,11 @@ class AssetsController < ApplicationController
     end
   end
   
+  #
+  # add a number of assets to the system with file uploads
+  # files and the count of files should be passed through the params in the following format:
+  # params = ["file-1" => #File, "file-2" => #File ... "file-n" => #File, :count => 'n']
+  #
   # POST /assets/add_assets
   # POST /assets/add_assets.json
   def add_assets
@@ -161,12 +177,14 @@ class AssetsController < ApplicationController
     @new_assets = []
     @new_assets_html = []
     num_files.times do |file_num|
+      # recreate the file key from the current index
       file = params["file-"+file_num.to_s]
       @asset = Asset.new(:name => file.original_filename)
       @asset.save
       @asset.save_file(file)
       
       @new_assets.push(@asset)
+      # render the html to add to the page for the json response
       asset_html = render_to_string :partial => "shared/asset.html.haml", :locals => { :asset => @asset }
       @new_assets_html.push(asset_html)
     end
